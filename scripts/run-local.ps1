@@ -3,6 +3,8 @@
 # 클라우드 쪽 수집 기록과 중복을 맞추려고 실행 전후로 저장소를 동기화한다.
 $ErrorActionPreference = 'Continue'
 Set-Location (Split-Path $PSScriptRoot -Parent)
+# 예약 실행은 창이 없으니 실행 기록을 local-run.log에 남긴다(git에는 올리지 않음).
+Start-Transcript -Path (Join-Path (Get-Location) 'local-run.log') -Append | Out-Null
 
 git pull --rebase --autostash
 node --env-file-if-exists=.env src/run.js --runner local
@@ -15,4 +17,5 @@ if ($LASTEXITCODE -ne 0) {
   git pull --rebase --autostash
   git push
 }
+Stop-Transcript | Out-Null
 exit $runExit
