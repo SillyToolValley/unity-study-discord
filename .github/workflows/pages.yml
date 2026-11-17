@@ -1,0 +1,43 @@
+name: calendar
+
+# 수집 기록으로 마감 캘린더 페이지와 .ics를 만들어 GitHub Pages에 올린다.
+# collect 워크플로가 끝날 때 불러 쓰고, 이 PC가 data/items-local.json을 올렸을 때도 돈다.
+on:
+  push:
+    branches: [main]
+    paths: ['data/**', 'src/calendar.js', 'src/calendar.html']
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node src/calendar.js site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

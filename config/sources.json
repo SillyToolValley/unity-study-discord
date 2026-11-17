@@ -1,0 +1,1410 @@
+{
+  "_help": {
+    "runner": "cloud = GitHub Actions에서 HTTP로 수집, local = 이 PC에서 Aside 브라우저로 수집",
+    "filter": "topics = config/topics.json 키워드에 걸리는 것만 게시, all = 전부 게시",
+    "enabled": "false면 건너뜀. 이용 규칙을 확인하지 못한 소스는 false로 둔다",
+    "region": "채용 공고의 근무지가 비어 있을 때: kr(기본값) = 국내로 본다, global = 제외한다"
+  },
+  "sources": [
+    {
+      "id": "devpost",
+      "name": "Devpost",
+      "type": "devpost",
+      "runner": "cloud",
+      "kind": "hackathon",
+      "filter": "topics",
+      "enabled": true,
+      "maxPages": 17,
+      "minRegistrations": 500
+    },
+    {
+      "id": "itch-jams",
+      "name": "itch.io Jams",
+      "type": "itch-jams",
+      "runner": "cloud",
+      "kind": "jam",
+      "filter": "all",
+      "enabled": true,
+      "minJoined": 200
+    },
+    {
+      "id": "godot-blog",
+      "name": "Godot Engine 블로그",
+      "type": "rss",
+      "runner": "cloud",
+      "kind": "news",
+      "filter": "topics",
+      "topics": [
+        "event"
+      ],
+      "enabled": true,
+      "url": "https://godotengine.org/rss.xml",
+      "maxAgeDays": 30
+    },
+    {
+      "id": "gh-epicgames",
+      "name": "Epic Games 채용",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "epicgames",
+      "region": "global"
+    },
+    {
+      "id": "wevity-game",
+      "name": "위비티 (게임/소프트웨어)",
+      "type": "wevity",
+      "runner": "cloud",
+      "kind": "contest",
+      "filter": "all",
+      "enabled": true,
+      "cidx": 21,
+      "pages": 2
+    },
+    {
+      "id": "wevity-it",
+      "name": "위비티 (웹/모바일/IT)",
+      "type": "wevity",
+      "runner": "cloud",
+      "kind": "contest",
+      "filter": "topics",
+      "topics": [
+        "engine",
+        "genai",
+        "event-kr"
+      ],
+      "enabled": true,
+      "cidx": 20,
+      "pages": 2
+    },
+    {
+      "id": "linkareer-contest",
+      "name": "링커리어 공모전",
+      "type": "jsonld-list",
+      "runner": "cloud",
+      "kind": "contest",
+      "filter": "topics",
+      "enabled": true,
+      "url": "https://linkareer.com/list/contest?page={page}",
+      "pages": 3
+    },
+    {
+      "id": "linkareer-activity",
+      "name": "링커리어 대외활동",
+      "type": "jsonld-list",
+      "runner": "cloud",
+      "kind": "contest",
+      "filter": "topics",
+      "enabled": true,
+      "url": "https://linkareer.com/list/activity?page={page}",
+      "pages": 3
+    },
+    {
+      "id": "thinkcontest",
+      "name": "씽굿",
+      "type": "jsonld-list",
+      "runner": "cloud",
+      "kind": "contest",
+      "filter": "topics",
+      "enabled": true,
+      "url": "https://www.thinkcontest.com/thinkgood/user/contest/index.do"
+    },
+    {
+      "id": "campuspick-contest",
+      "name": "캠퍼스픽 공모전",
+      "type": "jsonld-list",
+      "runner": "cloud",
+      "kind": "contest",
+      "filter": "topics",
+      "enabled": true,
+      "url": "https://www.campuspick.com/contest"
+    },
+    {
+      "id": "gamejob",
+      "name": "게임잡",
+      "type": "gamejob",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "kstartup",
+      "name": "K-Startup",
+      "type": "kstartup",
+      "runner": "cloud",
+      "kind": "contest",
+      "filter": "topics",
+      "enabled": true,
+      "pages": 2
+    },
+    {
+      "id": "gh-krafton",
+      "name": "크래프톤 채용",
+      "company": "크래프톤",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "enabled": true,
+      "board": "krafton"
+    },
+    {
+      "id": "lever-neowiz",
+      "name": "네오위즈 채용",
+      "company": "네오위즈",
+      "type": "lever",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "enabled": true,
+      "board": "neowiz"
+    },
+    {
+      "id": "greeting-kakaogames",
+      "name": "카카오게임즈 채용",
+      "company": "카카오게임즈",
+      "type": "greeting",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "enabled": true,
+      "url": "https://recruit.kakaogames.com/ko/joinjuskr"
+    },
+    {
+      "id": "greeting-111percent",
+      "name": "111퍼센트 채용",
+      "company": "111퍼센트",
+      "type": "greeting",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "enabled": true,
+      "url": "https://111percent.career.greetinghr.com/ko/home"
+    },
+    {
+      "id": "greeting-supercent",
+      "name": "슈퍼센트 채용",
+      "company": "슈퍼센트",
+      "type": "greeting",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "enabled": true,
+      "url": "https://supercent.career.greetinghr.com/ko/career"
+    },
+    {
+      "id": "naver",
+      "name": "네이버 채용",
+      "company": "네이버",
+      "type": "naver",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "origin": "https://recruit.navercorp.com"
+    },
+    {
+      "id": "navercloud",
+      "name": "네이버클라우드 채용",
+      "company": "네이버클라우드",
+      "type": "naver",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "origin": "https://recruit.navercloudcorp.com"
+    },
+    {
+      "id": "naverlabs",
+      "name": "네이버랩스 채용",
+      "company": "네이버랩스",
+      "type": "naver",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "origin": "https://recruit.naverlabs.com"
+    },
+    {
+      "id": "kakao",
+      "name": "카카오 채용",
+      "company": "카카오",
+      "type": "kakao",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "toss",
+      "name": "토스 채용",
+      "company": "토스",
+      "type": "toss",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "gh-coupang",
+      "name": "쿠팡 채용",
+      "company": "쿠팡",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "coupang"
+    },
+    {
+      "id": "gh-daangn",
+      "name": "당근 채용",
+      "company": "당근",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "daangn"
+    },
+    {
+      "id": "greeting-autoever",
+      "name": "현대오토에버 채용",
+      "company": "현대오토에버",
+      "type": "greeting",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://career.hyundai-autoever.com/ko/apply"
+    },
+    {
+      "id": "ashby-42dot",
+      "name": "포티투닷 채용",
+      "company": "포티투닷",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "42dot"
+    },
+    {
+      "id": "greeting-upstage",
+      "name": "업스테이지 채용",
+      "company": "업스테이지",
+      "type": "greeting",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://careers.upstage.ai/ko/upstage"
+    },
+    {
+      "id": "greeting-wrtn",
+      "name": "뤼튼 채용",
+      "company": "뤼튼",
+      "type": "greeting",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://career.wrtn.io/ko/career"
+    },
+    {
+      "id": "gh-furiosaai",
+      "name": "퓨리오사AI 채용",
+      "company": "퓨리오사AI",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "furiosaai"
+    },
+    {
+      "id": "gh-moloco",
+      "name": "몰로코 채용",
+      "company": "몰로코",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "moloco"
+    },
+    {
+      "id": "gh-sendbird",
+      "name": "센드버드 채용",
+      "company": "센드버드",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "sendbird"
+    },
+    {
+      "id": "ashby-friendliai",
+      "name": "프렌들리AI 채용",
+      "company": "프렌들리AI",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "friendliai"
+    },
+    {
+      "id": "gh-riotgames",
+      "name": "Riot Games 채용",
+      "company": "Riot Games",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "riotgames",
+      "region": "global"
+    },
+    {
+      "id": "gh-roblox",
+      "name": "Roblox 채용",
+      "company": "Roblox",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "roblox",
+      "region": "global"
+    },
+    {
+      "id": "gh-insomniac",
+      "name": "Insomniac Games 채용",
+      "company": "Insomniac Games",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "insomniac",
+      "region": "global"
+    },
+    {
+      "id": "gh-nintendo",
+      "name": "Nintendo 채용",
+      "company": "Nintendo",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "nintendo",
+      "region": "global"
+    },
+    {
+      "id": "gh-2k",
+      "name": "2K 채용",
+      "company": "2K",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "2k",
+      "region": "global"
+    },
+    {
+      "id": "gh-scopely",
+      "name": "Scopely 채용",
+      "company": "Scopely",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "scopely",
+      "region": "global"
+    },
+    {
+      "id": "gh-naughtydog",
+      "name": "Naughty Dog 채용",
+      "company": "Naughty Dog",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "naughtydog",
+      "region": "global"
+    },
+    {
+      "id": "gh-rockstargames",
+      "name": "Rockstar Games 채용",
+      "company": "Rockstar Games",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "rockstargames",
+      "region": "global"
+    },
+    {
+      "id": "gh-taketwo",
+      "name": "Take-Two 채용",
+      "company": "Take-Two",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "taketwo",
+      "region": "global"
+    },
+    {
+      "id": "gh-tripledotstudios",
+      "name": "Tripledot Studios 채용",
+      "company": "Tripledot Studios",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "tripledotstudios",
+      "region": "global"
+    },
+    {
+      "id": "gh-wildlifestudios",
+      "name": "Wildlife Studios 채용",
+      "company": "Wildlife Studios",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "wildlifestudios",
+      "region": "global"
+    },
+    {
+      "id": "gh-bungie",
+      "name": "Bungie 채용",
+      "company": "Bungie",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "bungie",
+      "region": "global"
+    },
+    {
+      "id": "gh-ncamerica",
+      "name": "NC America 채용",
+      "company": "NC America",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "ncamerica",
+      "region": "global"
+    },
+    {
+      "id": "lever-kabam",
+      "name": "Kabam (넷마블 자회사) 채용",
+      "company": "Kabam (넷마블 자회사)",
+      "type": "lever",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "kabam",
+      "region": "global"
+    },
+    {
+      "id": "lever-larian",
+      "name": "Larian Studios 채용",
+      "company": "Larian Studios",
+      "type": "lever",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "larian",
+      "region": "global"
+    },
+    {
+      "id": "lever-dreamgames",
+      "name": "Dream Games 채용",
+      "company": "Dream Games",
+      "type": "lever",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "dreamgames",
+      "region": "global"
+    },
+    {
+      "id": "lever-peakgames",
+      "name": "Peak Games 채용",
+      "company": "Peak Games",
+      "type": "lever",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "peakgames",
+      "region": "global"
+    },
+    {
+      "id": "lever-jamcity",
+      "name": "Jam City 채용",
+      "company": "Jam City",
+      "type": "lever",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "jamcity",
+      "region": "global"
+    },
+    {
+      "id": "ashby-supercell",
+      "name": "Supercell 채용",
+      "company": "Supercell",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "supercell",
+      "region": "global"
+    },
+    {
+      "id": "ashby-hoyoverse",
+      "name": "HoYoverse 채용",
+      "company": "HoYoverse",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "hoyoverse",
+      "region": "global"
+    },
+    {
+      "id": "ashby-thatgamecompany",
+      "name": "thatgamecompany 채용",
+      "company": "thatgamecompany",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "thatgamecompany",
+      "region": "global"
+    },
+    {
+      "id": "ashby-voodoo",
+      "name": "Voodoo 채용",
+      "company": "Voodoo",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "voodoo",
+      "region": "global"
+    },
+    {
+      "id": "sr-cdprojektred",
+      "name": "CD PROJEKT RED 채용",
+      "company": "CD PROJEKT RED",
+      "type": "smartrecruiters",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": false,
+      "board": "cdprojektred",
+      "note": "api.smartrecruiters.com의 robots.txt가 자동 수집을 막아서 꺼 둠",
+      "region": "global"
+    },
+    {
+      "id": "sr-gameloft",
+      "name": "Gameloft 채용",
+      "company": "Gameloft",
+      "type": "smartrecruiters",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": false,
+      "board": "gameloft",
+      "note": "api.smartrecruiters.com의 robots.txt가 자동 수집을 막아서 꺼 둠",
+      "region": "global"
+    },
+    {
+      "id": "gh-anthropic",
+      "name": "Anthropic 채용",
+      "company": "Anthropic",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "anthropic",
+      "region": "global"
+    },
+    {
+      "id": "gh-scaleai",
+      "name": "Scale AI 채용",
+      "company": "Scale AI",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "scaleai",
+      "region": "global"
+    },
+    {
+      "id": "gh-togetherai",
+      "name": "Together AI 채용",
+      "company": "Together AI",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "togetherai",
+      "region": "global"
+    },
+    {
+      "id": "gh-xai",
+      "name": "xAI 채용",
+      "company": "xAI",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "xai",
+      "region": "global"
+    },
+    {
+      "id": "gh-figureai",
+      "name": "Figure AI 채용",
+      "company": "Figure AI",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "figureai",
+      "region": "global"
+    },
+    {
+      "id": "gh-databricks",
+      "name": "Databricks 채용",
+      "company": "Databricks",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": false,
+      "board": "databricks",
+      "note": "게임·AI 기업이 아니고 해외 인턴 공고가 많아 꺼 둠",
+      "region": "global"
+    },
+    {
+      "id": "gh-figma",
+      "name": "Figma 채용",
+      "company": "Figma",
+      "type": "greenhouse",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": false,
+      "board": "figma",
+      "note": "게임·AI 기업이 아니고 해외 인턴 공고가 많아 꺼 둠",
+      "region": "global"
+    },
+    {
+      "id": "ashby-openai",
+      "name": "OpenAI 채용",
+      "company": "OpenAI",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "openai",
+      "region": "global"
+    },
+    {
+      "id": "ashby-cohere",
+      "name": "Cohere 채용",
+      "company": "Cohere",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "cohere",
+      "region": "global"
+    },
+    {
+      "id": "ashby-perplexity",
+      "name": "Perplexity 채용",
+      "company": "Perplexity",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "perplexity",
+      "region": "global"
+    },
+    {
+      "id": "ashby-elevenlabs",
+      "name": "ElevenLabs 채용",
+      "company": "ElevenLabs",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "elevenlabs",
+      "region": "global"
+    },
+    {
+      "id": "ashby-cursor",
+      "name": "Cursor 채용",
+      "company": "Cursor",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "cursor",
+      "region": "global"
+    },
+    {
+      "id": "ashby-physicalintelligence",
+      "name": "Physical Intelligence 채용",
+      "company": "Physical Intelligence",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "physicalintelligence",
+      "region": "global"
+    },
+    {
+      "id": "ashby-pika",
+      "name": "Pika 채용",
+      "company": "Pika",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "pika",
+      "region": "global"
+    },
+    {
+      "id": "ashby-lumaai",
+      "name": "Luma AI 채용",
+      "company": "Luma AI",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "lumaai",
+      "region": "global"
+    },
+    {
+      "id": "ashby-midjourney",
+      "name": "Midjourney 채용",
+      "company": "Midjourney",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "board": "midjourney",
+      "region": "global"
+    },
+    {
+      "id": "ashby-notion",
+      "name": "Notion 채용",
+      "company": "Notion",
+      "type": "ashby",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": false,
+      "board": "notion",
+      "note": "게임·AI 기업이 아니고 해외 인턴 공고가 많아 꺼 둠",
+      "region": "global"
+    },
+    {
+      "id": "inthiswork",
+      "name": "인디스워크",
+      "type": "wp-posts",
+      "runner": "cloud",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "engine",
+        "genai",
+        "company"
+      ],
+      "enabled": true,
+      "maxAgeDays": 7,
+      "origin": "https://inthiswork.com",
+      "pages": 2
+    },
+    {
+      "id": "aside-samsung",
+      "name": "삼성 채용",
+      "company": "삼성",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://www.samsungcareers.com/hr/",
+      "itemSelector": "a[href$=\"#none\"]",
+      "organizerLine": 0,
+      "titleLine": 1,
+      "textPattern": "20[0-9]{2}"
+    },
+    {
+      "id": "aside-sk",
+      "name": "SK 채용",
+      "company": "SK",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior",
+        "engine",
+        "genai"
+      ],
+      "enabled": true,
+      "url": "https://www.skcareers.com/Recruit",
+      "itemSelector": "a.list-link",
+      "hrefPattern": "/Recruit/Detail/",
+      "organizerLine": 3
+    },
+    {
+      "id": "aside-hyundai",
+      "name": "현대자동차 채용",
+      "company": "현대자동차",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://talent.hyundai.com/apply/applyList.hc",
+      "itemSelector": "a[href^=\"javascript:void\"]",
+      "textPattern": "D-|채용시까지"
+    },
+    {
+      "id": "aside-lotte",
+      "name": "롯데 채용",
+      "company": "롯데",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://recruit.lotte.co.kr/",
+      "itemSelector": "a.link",
+      "hrefPattern": "/apply/announcement/detail/",
+      "organizerLine": 0,
+      "titleLine": 1
+    },
+    {
+      "id": "aside-cj",
+      "name": "CJ 채용",
+      "company": "CJ",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://recruit.cj.net/recruit/ko/recruit/recruit/list.fo",
+      "itemSelector": "a.item.link",
+      "organizerLine": 1
+    },
+    {
+      "id": "aside-kt",
+      "name": "KT 채용",
+      "company": "KT",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://recruit.kt.com/",
+      "itemSelector": "a[href^=\"/careers/\"]",
+      "hrefPattern": "/careers/[0-9]+",
+      "titleLine": 1
+    },
+    {
+      "id": "aside-line",
+      "name": "LINE 채용",
+      "company": "LINE",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://careers.linecorp.com/ko/jobs",
+      "itemSelector": "a[href*=\"/ko/jobs/\"]",
+      "hrefPattern": "/ko/jobs/[0-9]+",
+      "locationLine": 1
+    },
+    {
+      "id": "aside-ncsoft",
+      "name": "엔씨소프트 채용",
+      "company": "엔씨소프트",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "enabled": true,
+      "url": "https://careers.ncsoft.com/apply/list",
+      "itemSelector": "a.applyDetailBtn",
+      "titleLine": 1
+    },
+    {
+      "id": "aside-smilegate",
+      "name": "스마일게이트 채용",
+      "company": "스마일게이트",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "enabled": true,
+      "url": "https://careers.smilegate.com/apply/announce",
+      "itemSelector": "a[href*=\"/apply/announce/view\"]"
+    },
+    {
+      "id": "aside-pearlabyss",
+      "name": "펄어비스 채용",
+      "company": "펄어비스",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "enabled": true,
+      "url": "https://www.pearlabyss.com/ko-KR/Company/Careers/List",
+      "itemSelector": "a.career_list_item"
+    },
+    {
+      "id": "aside-wanted",
+      "name": "원티드 (개발·신입) 채용",
+      "company": "원티드 (개발·신입)",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "engine",
+        "genai"
+      ],
+      "enabled": true,
+      "url": "https://www.wanted.co.kr/wdlist/518?country=kr&job_sort=job.latest_order&years=0",
+      "itemSelector": "a[href^=\"/wd/\"]",
+      "titleLine": 1,
+      "organizerLine": 2
+    },
+    {
+      "id": "aside-jumpit",
+      "name": "점핏 채용",
+      "company": "점핏",
+      "type": "aside",
+      "runner": "local",
+      "kind": "job",
+      "filter": "topics",
+      "topics": [
+        "engine",
+        "genai",
+        "junior"
+      ],
+      "enabled": true,
+      "url": "https://jumpit.saramin.co.kr/positions?sort=reg_dt",
+      "itemSelector": "a[href^=\"/position/\"]",
+      "titleLine": 2,
+      "organizerLine": 1
+    },
+    {
+      "filter": "topics",
+      "enabled": true,
+      "kind": "job",
+      "id": "netmarble",
+      "name": "넷마블 채용",
+      "company": "넷마블",
+      "type": "netmarble",
+      "runner": "cloud",
+      "topics": [
+        "junior",
+        "engine",
+        "genai"
+      ]
+    },
+    {
+      "filter": "topics",
+      "enabled": true,
+      "kind": "job",
+      "id": "nhn",
+      "name": "NHN 채용",
+      "company": "NHN",
+      "type": "nhn",
+      "runner": "cloud",
+      "topics": [
+        "junior",
+        "engine"
+      ]
+    },
+    {
+      "filter": "topics",
+      "enabled": true,
+      "kind": "job",
+      "id": "lg",
+      "name": "LG 채용",
+      "company": "LG",
+      "type": "lg",
+      "runner": "cloud",
+      "topics": [
+        "junior",
+        "genai"
+      ]
+    },
+    {
+      "filter": "topics",
+      "enabled": true,
+      "kind": "job",
+      "id": "hdhyundai",
+      "name": "HD현대 채용",
+      "company": "HD현대",
+      "type": "hdhyundai",
+      "runner": "cloud",
+      "topics": [
+        "junior"
+      ]
+    },
+    {
+      "filter": "topics",
+      "enabled": true,
+      "kind": "job",
+      "id": "greeting-devsisters",
+      "name": "데브시스터즈 채용",
+      "company": "데브시스터즈",
+      "type": "greeting",
+      "runner": "cloud",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "url": "https://careers.devsisters.com/ko/position",
+      "allowEmpty": true
+    },
+    {
+      "filter": "topics",
+      "enabled": true,
+      "kind": "job",
+      "id": "aside-kia",
+      "name": "기아 채용",
+      "company": "기아",
+      "type": "aside",
+      "runner": "local",
+      "topics": [
+        "junior"
+      ],
+      "url": "https://career.kia.com/apply/applyList.kc",
+      "itemSelector": "a[href^=\"javascript:void\"]",
+      "textPattern": "D-|채용시까지"
+    },
+    {
+      "filter": "topics",
+      "enabled": true,
+      "kind": "job",
+      "id": "aside-hanwha",
+      "name": "한화 채용",
+      "company": "한화",
+      "type": "aside",
+      "runner": "local",
+      "topics": [
+        "junior",
+        "genai"
+      ],
+      "url": "https://www.hanwhain.com/portal/apply/recruit",
+      "itemSelector": "li:has(h4.recruit-title)",
+      "organizerLine": 0,
+      "titleLine": 1,
+      "waitMs": 6000
+    },
+    {
+      "filter": "topics",
+      "enabled": true,
+      "kind": "job",
+      "id": "aside-shiftup",
+      "name": "시프트업 채용",
+      "company": "시프트업",
+      "type": "aside",
+      "runner": "local",
+      "topics": [
+        "junior",
+        "engine"
+      ],
+      "url": "https://shiftup.co.kr/recruit/recruit.php",
+      "itemSelector": "div.recruit_title",
+      "prefixLine": 0,
+      "titleLine": 1
+    }
+  ],
+  "_excluded": {
+    "넥슨": "careers.nexon.com이 스크립트 요청을 403으로 거부함(의도적 차단으로 보고 우회하지 않음)",
+    "우아한형제들": "robots.txt가 공고 데이터 경로 /w1/을 막음",
+    "SKT": "robots.txt가 소개 페이지 외 전체(/)를 막음",
+    "위메이드": "robots.txt가 page= 값이 있는 주소를 막는데, 공고 목록은 page= 없이는 0건으로 나옴",
+    "삼성SDS": "지원 버튼이 삼성 채용 사이트로 연결됨. aside-samsung에 포함",
+    "크래프톤(본사 사이트)": "403. 대신 Greenhouse 공개 피드(gh-krafton)로 수집"
+  }
+}

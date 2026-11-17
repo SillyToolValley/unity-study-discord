@@ -1,0 +1,16 @@
+{
+  "name": "career-feed-bot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "채용·해커톤·공모전·게임잼 공고를 수집해 디스코드 커리어 채널에 올리는 봇",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "collect:cloud": "node src/run.js --runner cloud",
+    "collect:local": "node --env-file-if-exists=.env src/run.js --runner local",
+    "dry:local": "node src/run.js --runner local --dry-run",
+    "dry": "node src/run.js --runner cloud --dry-run",
+    "seed": "node src/run.js --runner cloud --seed",
+    "calendar": "node src/calendar.js site"
+  }
+}

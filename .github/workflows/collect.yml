@@ -1,0 +1,52 @@
+name: collect
+
+on:
+  schedule:
+    # 한국 시간 09:00, 15:00, 21:00
+    - cron: '0 0,6,12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Collect and post
+        id: run
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_FORUM: ${{ vars.DISCORD_FORUM }}
+        run: node src/run.js --runner cloud
+      - name: Save state
+        run: |
+          git config user.name "career-feed-bot"
+          git config user.email "career-feed-bot@users.noreply.github.com"
+          git add data/items-cloud.json
+          git diff --cached --quiet || git commit -m "chore: update collected items"
+          git pull --rebase
+          git push
+      # 소스 하나라도 실패했으면 상태를 저장한 뒤 실행을 실패로 표시해 알림이 가게 한다.
+      - name: Report source failures
+        if: steps.run.outcome == 'failure'
+        run: exit 1
+
+  # 수집이 일부 실패해도 저장된 기록으로 캘린더는 갱신한다.
+  calendar:
+    needs: collect
+    if: always()
+    uses: ./.github/workflows/pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
