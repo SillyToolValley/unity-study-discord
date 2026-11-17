@@ -4,7 +4,7 @@
 import { readFileSync } from 'node:fs';
 import { openStore } from './store.js';
 import { matchTopics, isExpired } from './filter.js';
-import { post } from './discord.js';
+import { post, hasWebhook } from './discord.js';
 
 const args = process.argv.slice(2);
 const flag = (n) => args.includes(n);
@@ -63,7 +63,7 @@ const queue = store.items
   .filter((i) => i.posted === false && !isExpired(i))
   .sort((a, b) => (a.deadline ?? '9999').localeCompare(b.deadline ?? '9999'));
 
-if (dryRun || !process.env.DISCORD_WEBHOOK_URL) {
+if (dryRun || !hasWebhook()) {
   console.log(`\n게시 대상 ${queue.length}건 (${dryRun ? '--dry-run' : '웹훅 미설정'}이라 게시하지 않음)`);
   for (const i of queue.slice(0, 40)) {
     console.log(`- [${i.kind}] ${i.title} | 마감 ${i.deadline ?? '-'} | ${i.matched.join(', ')} | ${i.url}`);

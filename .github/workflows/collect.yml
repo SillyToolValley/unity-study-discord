@@ -25,6 +25,8 @@ jobs:
         id: run
         continue-on-error: true
         env:
+          DISCORD_WEBHOOK_JOBS: ${{ secrets.DISCORD_WEBHOOK_JOBS }}
+          DISCORD_WEBHOOK_EVENTS: ${{ secrets.DISCORD_WEBHOOK_EVENTS }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_FORUM: ${{ vars.DISCORD_FORUM }}
         run: node src/run.js --runner cloud

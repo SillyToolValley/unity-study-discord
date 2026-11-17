@@ -1,5 +1,12 @@
-// 디스코드 웹훅으로 게시한다. DISCORD_WEBHOOK_URL이 없으면 게시하지 않는다.
+// 디스코드 웹훅으로 게시한다.
+//   DISCORD_WEBHOOK_JOBS    채용 공고를 올릴 채널의 웹훅
+//   DISCORD_WEBHOOK_EVENTS  해커톤·공모전·게임잼·소식을 올릴 채널의 웹훅
+//   DISCORD_WEBHOOK_URL     위 둘이 없을 때 모두 여기로
 // 포럼 채널 웹훅이면 DISCORD_FORUM=1을 설정한다(공고마다 글 하나가 생긴다).
+export const webhookFor = (item) =>
+  (item.kind === 'job' ? process.env.DISCORD_WEBHOOK_JOBS : process.env.DISCORD_WEBHOOK_EVENTS) || process.env.DISCORD_WEBHOOK_URL || null;
+export const hasWebhook = () =>
+  Boolean(process.env.DISCORD_WEBHOOK_URL || (process.env.DISCORD_WEBHOOK_JOBS && process.env.DISCORD_WEBHOOK_EVENTS));
 const KIND = {
   hackathon: { label: '해커톤', color: 0x5865f2 },
   jam: { label: '게임잼', color: 0xeb459e },
@@ -10,6 +17,21 @@ const KIND = {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+const fmtDate = (d) => {
+  const [y, m, dd] = d.split('-').map(Number);
+  return `${m}월 ${dd}일(${'일월화수목금토'[new Date(Date.UTC(y, m - 1, dd)).getUTCDay()]})`;
+};
+
+// 포럼 목록에서 글 미리보기로 보이는 한 줄: 회사 | 마감 | 걸린 조건
+export function summaryLine(item) {
+  const hits = (item.matched ?? []).filter((m) => m !== '전체' && m !== '국내').map((m) => (m === '무관' ? '경력 무관' : m));
+  return [
+    item.organizer,
+    item.deadline ? `마감 ${fmtDate(item.deadline)}` : item.kind === 'job' ? '상시 모집' : null,
+    hits.slice(0, 4).join(' · '),
+  ].filter(Boolean).join('  |  ').slice(0, 300);
+}
+
 export function buildPayload(item) {
   const k = KIND[item.kind] ?? KIND.news;
   const fields = [];
@@ -18,6 +40,7 @@ export function buildPayload(item) {
   if (item.tags?.length) fields.push({ name: '분류', value: item.tags.join(', ').slice(0, 200), inline: true });
   const payload = {
     allowed_mentions: { parse: [] },
+    content: summaryLine(item) || undefined,
     embeds: [{
       title: `[${k.label}] ${item.title}`.slice(0, 250),
       url: item.url,
@@ -32,8 +55,8 @@ export function buildPayload(item) {
 }
 
 export async function post(item) {
-  const url = process.env.DISCORD_WEBHOOK_URL;
-  if (!url) throw new Error('DISCORD_WEBHOOK_URL이 설정되지 않음');
+  const url = webhookFor(item);
+  if (!url) throw new Error(`${item.kind} 공고를 올릴 웹훅이 설정되지 않음`);
   for (let attempt = 0; attempt < 3; attempt++) {
     const res = await fetch(url, {
       method: 'POST',
