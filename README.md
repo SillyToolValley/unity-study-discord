@@ -37,6 +37,8 @@ node src/run.js --runner cloud --dry-run --only <소스id>   # 소스 하나만 
 
 | 이름 | 위치 | 설명 |
 |---|---|---|
-| `DISCORD_WEBHOOK_URL` | 저장소 Secrets, PC의 `.env` | 커리어 채널 웹훅 주소 |
+| `DISCORD_WEBHOOK_JOBS` | 저장소 Secrets, PC의 `.env` | 채용 공고를 올릴 포럼(💼┃채용-알림) 웹훅 |
+| `DISCORD_WEBHOOK_EVENTS` | 저장소 Secrets, PC의 `.env` | 해커톤·공모전·게임잼을 올릴 포럼(🏆┃대외활동-알림) 웹훅 |
+| `DISCORD_WEBHOOK_URL` | 저장소 Secrets, PC의 `.env` | (선택) 위 둘 대신 한 채널에 모두 올릴 때 |
 | `DISCORD_FORUM` | 저장소 Variables, PC의 `.env` | 포럼 채널이면 `1` (공고마다 글 하나) |
 | `MAX_POSTS_PER_RUN` | 환경 변수 | 한 번에 올릴 최대 건수, 기본 15 |
