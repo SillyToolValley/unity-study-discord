@@ -18,7 +18,7 @@ Unity · Unreal · Godot · 생성형 AI 관련 **채용, 해커톤, 공모전, 
 | 실행 위치 | 대상 | 시간 |
 |---|---|---|
 | GitHub Actions (`.github/workflows/collect.yml`) | 공개 API·HTML로 읽을 수 있는 사이트 | 매일 09:00, 15:00, 21:00 (KST) |
-| 운영자 PC (`scripts/run-local.ps1`, 작업 스케줄러) | 자바스크립트로 그려지는 사이트 (Aside 브라우저 사용) | 작업 스케줄러 설정대로 |
+| 운영자 PC (`scripts/run-local.cmd`, 작업 스케줄러) | 자바스크립트로 그려지는 사이트 (Aside 브라우저 사용) | 매일 09:10, 15:10, 21:10 (PC가 켜져 있을 때) |
 
 ## 명령
 
