@@ -20,6 +20,8 @@ const jf = cfg.jobFilter ?? {};
 const MAX_YEARS = jf.maxYears ?? 3;
 const seniorEx = compile(jf.seniorExclude);
 const roleEx = compile(jf.roleExclude);
+const PLANNING_ROLES = new Set(jf.planningRoles ?? []);
+const planningCtx = compile(jf.planningContext);
 
 const hitsOf = (list, text) => [...new Set(list.filter(({ re }) => re.test(text)).map(({ word }) => word))];
 
@@ -63,6 +65,8 @@ export function matchJob(item) {
   // 직무는 제목에서만 찾는다. 부서명·태그(예: "Development" 부서의 마케터)에 걸리지 않게.
   const roles = hitsOf(groups.role ?? [], title);
   if (roles.length === 0) return [];
+  // 기획으로만 걸렸으면 게임·엔진·AI 관련 기획일 때만 통과시킨다(전략기획·웹기획 등은 뺀다).
+  if (roles.every((r) => PLANNING_ROLES.has(r)) && !planningCtx.some(({ re }) => re.test(title))) return [];
 
   const juniorInTitle = hitsOf(groups.junior ?? [], title);
   // 경력: 제목 표기 → 채용 사이트의 경력 값 → 태그·요약 순서로 본다.
