@@ -44,9 +44,12 @@ export function parseRobots(text) {
   return groups;
 }
 
+// 규칙에 한글 같은 문자가 그대로 적혀 있어도 주소의 퍼센트 인코딩 형태와 맞춰 본다.
+const encodeRule = (p) => p.replace(/[^\x00-\x7f]+/g, (s) => encodeURIComponent(s));
+
 function ruleMatches(rulePath, path) {
   const re = new RegExp(
-    '^' + rulePath.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\\\$$/, '$'),
+    '^' + encodeRule(rulePath).replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\\\$$/, '$'),
   );
   return re.test(path);
 }
@@ -64,7 +67,8 @@ export function robotsAllows(groups, path) {
   return best ? best.allow : true;
 }
 
-// robots.txt가 허용하는지 확인한다. 못 읽으면(네트워크 오류, 5xx) 막힌 것으로 본다.
+// robots.txt가 허용하는지 확인한다. 못 읽으면(네트워크 오류, 5xx, 429 요청 제한) 막힌 것으로 본다.
+// 404처럼 robots.txt가 없다는 응답이면 제한이 없는 것으로 본다.
 export async function isAllowed(url) {
   const u = new URL(url);
   if (!robotsCache.has(u.origin)) {
@@ -72,7 +76,7 @@ export async function isAllowed(url) {
     try {
       const res = await rawFetch(u.origin + '/robots.txt');
       if (res.ok) groups = parseRobots(await res.text());
-      else if (res.status >= 400 && res.status < 500) groups = [];
+      else if (res.status >= 400 && res.status < 500 && res.status !== 429) groups = [];
     } catch { /* groups stays null */ }
     robotsCache.set(u.origin, groups);
   }
@@ -81,13 +85,23 @@ export async function isAllowed(url) {
   return robotsAllows(groups, u.pathname + u.search);
 }
 
+// 리다이렉트는 직접 따라가며, 옮겨 간 주소도 robots.txt가 허용하는지 확인한다.
 export async function get(url, { skipRobots = false } = {}) {
-  if (!skipRobots && !(await isAllowed(url))) {
-    throw new Error(`robots.txt가 막고 있거나 확인할 수 없음: ${url}`);
+  let cur = url;
+  for (let hop = 0; ; hop++) {
+    if (!skipRobots && !(await isAllowed(cur))) {
+      throw new Error(`robots.txt가 막고 있거나 확인할 수 없음: ${cur}`);
+    }
+    const res = await rawFetch(cur, { redirect: 'manual' });
+    const loc = res.status >= 300 && res.status < 400 ? res.headers.get('location') : null;
+    if (!loc) {
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${cur}`);
+      return res;
+    }
+    if (hop >= 5) throw new Error(`리다이렉트가 너무 많음: ${url}`);
+    await res.body?.cancel();
+    cur = new URL(loc, cur).href;
   }
-  const res = await rawFetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status}: ${url}`);
-  return res;
 }
 
 // 목록 조회를 POST로만 받는 사이트용. 조회 전용 요청에만 쓴다.

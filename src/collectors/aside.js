@@ -1,5 +1,8 @@
 import { spawnSync } from 'node:child_process';
 import { isAllowed } from '../http.js';
+import { parseDeadline } from '../dates.js';
+
+export { parseDeadline };
 
 // 자바스크립트로 그려지는 페이지용. 이 PC의 Aside 브라우저에서 페이지를 열고
 // itemSelector에 걸리는 요소의 글자와 링크만 읽어 온다. 모델은 쓰지 않는다.
@@ -15,20 +18,6 @@ import { isAllowed } from '../http.js';
 //   locationLine   (선택) 몇 번째 줄이 근무지인지. 줄 안에 '|'가 있으면 앞부분만 쓴다
 //   waitMs         (선택) 페이지가 그려지길 기다리는 시간, 기본 3500
 const MARK = '@@CAREER_FEED@@';
-const KST = 9 * 3_600_000;
-
-// "2026.11.16 ~ 2026.12.07", "2026년 11월 17일", "D-6" 같은 표기에서 마감일을 뽑는다.
-export function parseDeadline(text, now = Date.now()) {
-  const dates = [...text.matchAll(/(20\d{2})\s*[.\-/년]\s*(\d{1,2})\s*[.\-/월]\s*(\d{1,2})/g)];
-  if (dates.length >= 2 || (dates.length === 1 && /~\s*20\d{2}/.test(text))) {
-    const d = dates[dates.length - 1];
-    return `${d[1]}-${d[2].padStart(2, '0')}-${d[3].padStart(2, '0')}`;
-  }
-  const dn = text.match(/D\s*-\s*(\d+)/i);
-  if (dn) return new Date(now + KST + Number(dn[1]) * 86_400_000).toISOString().slice(0, 10);
-  if (/D\s*-\s*DAY/i.test(text)) return new Date(now + KST).toISOString().slice(0, 10);
-  return null;
-}
 
 export function toItems(raw, source) {
   const hrefRe = source.hrefPattern ? new RegExp(source.hrefPattern) : null;

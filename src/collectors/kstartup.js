@@ -1,4 +1,5 @@
 import { getText } from '../http.js';
+import { kstDate } from '../dates.js';
 
 const clean = (s) => s.replace(/<span class="new">[\s\S]*?<\/span>/g, '').replace(/<[^>]+>/g, ' ')
   .replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/\s+/g, ' ').trim();
@@ -18,13 +19,13 @@ export function parseList(html) {
     if (!tit) continue;
     seen.add(id);
     const type = body.match(/<span class="flag type\d+">([\s\S]*?)<\/span>/);
-    const d = body.match(/<span class="flag day">\s*D-(\d+)/);
+    const d = body.match(/<span class="flag day">\s*D-(\d+|day)/i);
     const meta = [...(body.split('</ul>')[0].matchAll(/<li>([\s\S]*?)<\/li>/g))].map((m) => clean(m[1]));
     items.push({
       title: clean(tit[1]),
       url: `${LIST}?schM=view&pbancSn=${id}`,
       organizer: meta[1] ?? null,
-      deadline: d ? new Date(Date.now() + 9 * 3_600_000 + Number(d[1]) * 86_400_000).toISOString().slice(0, 10) : null,
+      deadline: d ? kstDate(Date.now(), /day/i.test(d[1]) ? 0 : Number(d[1])) : null,
       tags: type ? [clean(type[1])] : [],
       summary: meta[0] ?? '',
     });

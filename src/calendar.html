@@ -184,7 +184,8 @@ footer { margin-top: 40px; color: var(--muted); font-size: 12px; line-height: 1.
   function pad(n) { return String(n).padStart(2, '0'); }
   function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
   function parse(s) { var p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); }
-  var TODAY = ymd(new Date());
+  // 마감일은 한국 날짜라서, 보는 사람이 어느 나라에 있든 한국 날짜를 오늘로 쓴다.
+  var TODAY = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
   function diff(s) { return Math.round((parse(s) - parse(TODAY)) / 864e5); }
   function fmt(s) { var d = parse(s); return (d.getMonth() + 1) + '월 ' + d.getDate() + '일(' + WD[d.getDay()] + ')'; }
 
@@ -232,7 +233,7 @@ footer { margin-top: 40px; color: var(--muted); font-size: 12px; line-height: 1.
   }
 
   function dday(i) {
-    if (!i.d) return h('span', { class: 'dday' }, '상시');
+    if (!i.d) return h('span', { class: 'dday' }, '미정');
     var n = diff(i.d);
     return h('span', { class: 'dday' + (n <= 3 ? ' urgent' : n <= 7 ? ' soon' : '') }, n <= 0 ? 'D-DAY' : 'D-' + n);
   }
@@ -322,7 +323,7 @@ footer { margin-top: 40px; color: var(--muted); font-size: 12px; line-height: 1.
       panel = h('section', { class: 'panel' },
         h('h3', null, ym[1] + '월 마감 ' + monthItems.length + '건'),
         rows(monthItems.filter(function (i) { return i.d >= TODAY; })),
-        undated ? h('p', { class: 'hint', style: 'margin-top:10px' }, '마감일이 없는 상시 공고 ' + undated + '건은 목록 보기에 있어요.') : null);
+        undated ? h('p', { class: 'hint', style: 'margin-top:10px' }, '마감일이 적혀 있지 않은 공고 ' + undated + '건은 목록 보기에 있어요.') : null);
     }
     return [head, h('div', { class: 'grid' }, cells), panel];
   }
@@ -332,7 +333,7 @@ footer { margin-top: 40px; color: var(--muted); font-size: 12px; line-height: 1.
     var thisYear = parse(TODAY).getFullYear();
     list.forEach(function (i) {
       var key, label;
-      if (!i.d) { key = 'z'; label = '상시 · 마감일 미정'; }
+      if (!i.d) { key = 'z'; label = '마감일 미표기 (상시 모집 포함)'; }
       else {
         var n = diff(i.d);
         if (n <= 0) { key = 'a'; label = '오늘 마감'; }

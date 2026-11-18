@@ -17,8 +17,11 @@ Unity · Unreal · Godot · 생성형 AI 관련 **채용, 해커톤, 공모전, 
 
 | 실행 위치 | 대상 | 시간 |
 |---|---|---|
-| GitHub Actions (`.github/workflows/collect.yml`) | 공개 API·HTML로 읽을 수 있는 사이트 | 매일 09:00, 15:00, 21:00 (KST) |
-| 운영자 PC (`scripts/run-local.cmd`, 작업 스케줄러) | 자바스크립트로 그려지는 사이트 (Aside 브라우저 사용) | 매일 09:10, 15:10, 21:10 (PC가 켜져 있을 때) |
+| GitHub Actions (`.github/workflows/collect.yml`) | 공개 API·HTML로 읽을 수 있는 사이트 | 매일 09:37, 15:37, 21:37 (KST, GitHub 사정으로 늦어질 수 있음) |
+| 운영자 PC (`scripts/run-local.cmd`, 작업 스케줄러) | 자바스크립트로 그려지는 사이트 (Aside 브라우저 사용) | 매일 09:10, 15:10, 21:10 (PC가 켜져 있고 main 브랜치일 때) |
+
+- 마감일이 적혀 있지 않은 공고는 목록에서 마지막으로 본 뒤 10일이 지나면 캘린더에서 내립니다.
+- 디스코드가 내용 문제로 거부한 공고는 기록에 `postError`를 남기고 건너뜁니다.
 
 ## 명령
 

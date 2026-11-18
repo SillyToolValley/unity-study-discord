@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 // 러너(cloud/local)마다 상태 파일을 따로 둬서 서로 덮어쓰지 않게 한다.
@@ -44,6 +44,14 @@ export function openStore(runner) {
   const mine = load(runner);
   const urls = new Set();
   const titles = new Set();
+  // 이 러너가 기록한 공고를 주소·제목 키로 찾기 위한 표
+  const ownByKey = new Map();
+  const ownByTitle = new Map();
+  const index = (rec) => {
+    ownByKey.set(rec.key, rec);
+    if (rec.titleKey?.length >= 12) ownByTitle.set(rec.titleKey, rec);
+  };
+  mine.items.forEach(index);
   for (const f of readdirSync(DIR).filter((n) => /^items-.+\.json$/.test(n))) {
     for (const it of JSON.parse(readFileSync(join(DIR, f), 'utf8')).items) {
       urls.add(it.key);
@@ -56,11 +64,19 @@ export function openStore(runner) {
       const tk = titleKey(item);
       return urls.has(keyOf(item)) || (tk.length >= 12 && titles.has(tk));
     },
+    // 이미 본 공고가 이번에도 목록에 있으면 마지막으로 본 날을 남긴다.
+    // 마감일 없는 공고를 캘린더에서 언제 내릴지 정할 때 쓰므로, 조건을 통과한 마감일 없는 공고만 기록한다.
+    touch(item, day) {
+      const tk = titleKey(item);
+      const rec = ownByKey.get(keyOf(item)) ?? (tk.length >= 12 ? ownByTitle.get(tk) : undefined);
+      if (rec && rec.matched?.length && !rec.deadline && rec.lastSeen !== day) rec.lastSeen = day;
+    },
     add(item) {
       const rec = { ...item, key: keyOf(item), titleKey: titleKey(item) };
       mine.items.push(rec);
       urls.add(rec.key);
       titles.add(rec.titleKey);
+      index(rec);
       return rec;
     },
     save() {
@@ -69,7 +85,10 @@ export function openStore(runner) {
       const old = new Date(Date.now() - 365 * 86_400_000).toISOString();
       mine.items = mine.items.filter((i) => (i.deadline ? i.deadline >= cutoff : i.firstSeen >= old)).map(slim);
       // 한 줄에 한 건씩 써서 커밋 차이가 읽기 쉽게 한다.
-      writeFileSync(fileOf(runner), '{"items":[\n' + mine.items.map((i) => JSON.stringify(i)).join(',\n') + '\n]}\n');
+      // 임시 파일에 다 쓴 뒤 바꿔 끼워서, 쓰는 도중 끊겨도 기존 파일이 깨지지 않게 한다.
+      const f = fileOf(runner);
+      writeFileSync(f + '.tmp', '{"items":[\n' + mine.items.map((i) => JSON.stringify(i)).join(',\n') + '\n]}\n');
+      renameSync(f + '.tmp', f);
     },
   };
 }

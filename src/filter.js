@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { kstDate, addDays } from './dates.js';
 
 const cfg = JSON.parse(readFileSync('config/topics.json', 'utf8'));
 
@@ -25,20 +26,36 @@ const hitsOf = (list, text) => [...new Set(list.filter(({ re }) => re.test(text)
 // 글에서 요구 경력의 최소 연수를 찾는다. 못 찾으면 null.
 //   "경력 3년 이상", "3~5년", "1-3년", "경력 2년", "5+ years", "3 years of" → 최소값
 //   "5년 이하", "3년 미만" → 0 (상한만 있으면 신입도 지원 가능)
+//   "2-5 years", "1 to 3 years" → 앞쪽 값
 export function minYearsIn(text) {
   const mins = [];
   for (const m of text.matchAll(/(?<!\d)(\d{1,2})\s*(?:~|-|–)\s*\d{1,2}\s*년/g)) mins.push(+m[1]);
   for (const m of text.matchAll(/(?<!\d)(\d{1,2})\s*년\s*(?:이상|차|↑|\+)/g)) mins.push(+m[1]);
   for (const m of text.matchAll(/경력\s*(\d{1,2})\s*년/g)) mins.push(+m[1]);
-  for (const m of text.matchAll(/(?<!\d)(\d{1,2})\s*\+?\s*(?:years?|yrs?)\b/gi)) mins.push(+m[1]);
+  for (const m of text.matchAll(/(?<!\d)(\d{1,2})\s*(?:~|-|–|to)\s*\d{1,2}\s*\+?\s*(?:years?|yrs?)\b/gi)) mins.push(+m[1]);
+  // 범위의 뒤쪽 숫자("2-5 years"의 5)는 따로 세지 않는다.
+  for (const m of text.matchAll(/(?<!\d\s*(?:~|-|–|to)\s*)(?<!\d)(\d{1,2})\s*\+?\s*(?:years?|yrs?)\b/gi)) mins.push(+m[1]);
   if (/(?<!\d)\d{1,2}\s*년\s*(?:이하|미만)/.test(text)) mins.push(0);
   return mins.length ? Math.min(...mins) : null;
 }
 
+// 제목 앞에 붙은 회사명("DeepAuto.ai｜…", "[회사] …")을 뗀다.
+// 회사명의 "ai", "바이오" 같은 글자가 직무·제외 조건에 걸리지 않게 하려는 것이다.
+export function stripOrganizer(title, organizer) {
+  const org = String(organizer ?? '').trim();
+  if (org.length < 2) return title;
+  const e = org.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const rest = title.replace(new RegExp(`^\\s*(?:\\[\\s*${e}\\s*\\]|\\(\\s*${e}\\s*\\)|${e}\\s*[｜|:·–—-])\\s*`, 'i'), '');
+  return rest.trim() ? rest : title;
+}
+
+// "학력 무관", "나이 무관"의 '무관'이 경력 무관으로 잡히지 않게 지운다.
+const NOT_CAREER_MUGWAN = /(학력|나이|연령|성별|전공|지역|국적)\s*(?:[·/,]\s*(?:학력|나이|연령|성별|전공|지역|국적)\s*)*무관/g;
+
 // 채용 공고: 경력 조건과 직무 조건을 둘 다 맞아야 한다. 맞으면 걸린 이유를 돌려준다.
 export function matchJob(item) {
-  const title = item.title ?? '';
-  const text = [title, ...(item.tags ?? []), item.summary].filter(Boolean).join(' \n ');
+  const title = stripOrganizer(item.title ?? '', item.organizer).replace(NOT_CAREER_MUGWAN, ' ');
+  const text = [title, ...(item.tags ?? []), item.summary].filter(Boolean).join(' \n ').replace(NOT_CAREER_MUGWAN, ' ');
 
   if (seniorEx.some(({ re }) => re.test(title))) return [];
   if (roleEx.some(({ re }) => re.test(title))) return [];
@@ -73,6 +90,7 @@ const REMOTE = compile(lc.remote);
 const REGION_OK = compile(lc.remoteRegionOk);
 const HANGUL = /[가-힣]/;
 
+// 한글 근무지는 국내로 보되, 다른 나라 이름(한글·영문)이 함께 있으면 뺀다. 예: "재택 (US only)"
 const isKorea = (p) => KOREA.some(({ re }) => re.test(p)) || (HANGUL.test(p) && !FOREIGN_KO.some(({ re }) => re.test(p)));
 // "Remote", "Remote - Global", "원격" 처럼 원격 표기 말고 다른 지명이 없는 경우
 function isPureRemote(p) {
@@ -113,5 +131,11 @@ export function matchTopics(item, source) {
   return [...new Set(hits)];
 }
 
-export const isExpired = (item, today = new Date().toISOString().slice(0, 10)) =>
+// 마감이 지났는지는 한국 날짜로 판단한다(실행이 밀려 한국 시간 자정을 넘겨도 어제 마감을 올리지 않게).
+export const isExpired = (item, today = kstDate()) =>
   Boolean(item.deadline) && item.deadline < today;
+
+// 마감일이 없는 공고는 목록에서 마지막으로 본 뒤 이 기간이 지나면 끝난 것으로 본다(캘린더에서 내림).
+export const UNDATED_KEEP_DAYS = 10;
+export const isStaleUndated = (item, today = kstDate()) =>
+  !item.deadline && String(item.lastSeen ?? item.firstSeen ?? '').slice(0, 10) < addDays(today, -UNDATED_KEEP_DAYS);

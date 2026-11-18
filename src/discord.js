@@ -27,7 +27,8 @@ export function summaryLine(item) {
   const hits = (item.matched ?? []).filter((m) => m !== '전체' && m !== '국내').map((m) => (m === '무관' ? '경력 무관' : m));
   return [
     item.organizer,
-    item.deadline ? `마감 ${fmtDate(item.deadline)}` : item.kind === 'job' ? '상시 모집' : null,
+    // 마감일을 못 읽은 공고가 실제로 상시 모집인지는 알 수 없어서 "미표기"로 적는다.
+    item.deadline ? `마감 ${fmtDate(item.deadline)}` : item.kind === 'news' ? null : '마감일 미표기',
     hits.slice(0, 4).join(' · '),
   ].filter(Boolean).join('  |  ').slice(0, 300);
 }
@@ -68,7 +69,11 @@ export async function post(item) {
       await sleep(((body.retry_after ?? 2) + 0.5) * 1000);
       continue;
     }
-    if (!res.ok) throw new Error(`디스코드 게시 실패 HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    if (!res.ok) {
+      const err = new Error(`디스코드 게시 실패 HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
+      err.status = res.status;
+      throw err;
+    }
     await sleep(1200);
     return;
   }

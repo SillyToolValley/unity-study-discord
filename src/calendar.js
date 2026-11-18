@@ -5,19 +5,25 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
+import { kstDate, validDate } from './dates.js';
+import { isStaleUndated } from './filter.js';
 
 const OUT = process.argv[2] ?? 'site';
 const KIND = { job: '채용', hackathon: '해커톤', contest: '공모전', jam: '게임잼' };
 const now = new Date();
-const today = new Date(now.getTime() + 9 * 3_600_000).toISOString().slice(0, 10); // 한국 날짜
+const today = kstDate(now.getTime()); // 한국 날짜
 
 // 조건을 통과했고 마감이 지나지 않은 공고만 쓴다. 소식(news)은 마감이 없어 뺀다.
+// 마감일이 없는 공고는 목록에서 마지막으로 본 뒤 며칠이 지나면 끝난 것으로 보고 뺀다.
 export function loadItems(dir = 'data') {
   const items = [];
   for (const f of readdirSync(dir).filter((n) => /^items-.+\.json$/.test(n))) {
-    for (const it of JSON.parse(readFileSync(join(dir, f), 'utf8')).items) {
-      if (!it.matched?.length || !KIND[it.kind]) continue;
+    for (const raw of JSON.parse(readFileSync(join(dir, f), 'utf8')).items) {
+      if (!raw.matched?.length || !KIND[raw.kind]) continue;
+      // 날짜가 이상한 값이면 마감일 없음으로 다룬다(.ics 생성이 통째로 실패하지 않게).
+      const it = validDate(raw.deadline) ? raw : { ...raw, deadline: null };
       if (it.deadline && it.deadline < today) continue;
+      if (isStaleUndated(it, today)) continue;
       items.push(it);
     }
   }
