@@ -30,9 +30,17 @@ const keyOf = (item) => (item.uid ? `${canonicalUrl(item.url)}#${item.uid}` : ca
 
 // 같은 공고가 다른 사이트에 올라온 경우를 잡기 위한 제목 키.
 // 채용은 회사가 달라도 직무명이 같을 수 있어서 회사명을 함께 넣는다.
-export const titleKey = (item) =>
-  ((item.kind === 'job' ? (item.organizer ?? '') + '|' : '') + item.title)
-    .toLowerCase().replace(/[\s\p{P}\p{S}]+/gu, '');
+// 제목 앞에 회사명이 붙은 사이트("NHN Service｜[판교] …")와 안 붙은 사이트의 같은 공고도 같은 키가 되게 회사명 접두어를 뗀다.
+const norm = (s) => String(s ?? '').toLowerCase().replace(/[\s\p{P}\p{S}]+/gu, '');
+export const titleKey = (item) => {
+  if (item.kind !== 'job') return norm(item.title);
+  const org = norm(item.organizer);
+  let t = norm(item.title);
+  if (org && t.length > org.length && t.startsWith(org)) t = t.slice(org.length);
+  return org + t;
+};
+// 예전 방식의 키(회사명 접두어를 떼지 않음). 이미 저장된 기록과 맞춰 볼 때 쓴다.
+const oldTitleKey = (item) => (item.kind === 'job' ? norm(item.organizer) : '') + norm(item.title);
 
 function load(runner) {
   const f = fileOf(runner);
@@ -51,18 +59,23 @@ export function openStore(runner) {
     ownByKey.set(rec.key, rec);
     if (rec.titleKey?.length >= 12) ownByTitle.set(rec.titleKey, rec);
   };
+  // 회사명이 남아 있는 기록(조건을 통과한 공고)은 새 방식으로 제목 키를 다시 만든다.
+  for (const it of mine.items) if (it.organizer && it.kind === 'job') it.titleKey = titleKey(it);
   mine.items.forEach(index);
   for (const f of readdirSync(DIR).filter((n) => /^items-.+\.json$/.test(n))) {
-    for (const it of JSON.parse(readFileSync(join(DIR, f), 'utf8')).items) {
+    const items = f === `items-${runner}.json` ? mine.items : JSON.parse(readFileSync(join(DIR, f), 'utf8')).items;
+    for (const it of items) {
       urls.add(it.key);
       titles.add(it.titleKey);
+      if (it.organizer && it.kind === 'job') titles.add(titleKey(it));
     }
   }
   return {
     items: mine.items,
     has(item) {
       const tk = titleKey(item);
-      return urls.has(keyOf(item)) || (tk.length >= 12 && titles.has(tk));
+      const old = oldTitleKey(item);
+      return urls.has(keyOf(item)) || (tk.length >= 12 && titles.has(tk)) || (old.length >= 12 && titles.has(old));
     },
     // 이미 본 공고가 이번에도 목록에 있으면 마지막으로 본 날을 남긴다.
     // 마감일 없는 공고를 캘린더에서 언제 내릴지 정할 때 쓰므로, 조건을 통과한 마감일 없는 공고만 기록한다.
