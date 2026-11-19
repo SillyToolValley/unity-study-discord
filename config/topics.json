@@ -229,6 +229,22 @@
       "생성형",
       "에이전트"
     ],
+    "_generic": "직무가 '엔지니어'로만 걸리면 제목에 engineerContext(소프트웨어·데이터·AI·게임 쪽 단어)가 있어야 하고, 'AI'로만 걸리면 aiContext(실제 직무를 뜻하는 단어)가 있어야 통과한다. 엔지니어와 AI가 함께 걸리면(예: AI Engineer) 통과. 반도체 공정·네트워크 엔지니어나 'AI활용' 디자이너 같은 공고를 빼려는 것이다.",
+    "engineerRoles": ["엔지니어", "engineer"],
+    "engineerContext": [
+      "software", "SW", "S/W", "소프트웨어", "backend", "back-end", "백엔드", "frontend", "front-end", "프론트", "full stack", "fullstack", "풀스택",
+      "data", "데이터", "ML", "machine learning", "머신러닝", "딥러닝", "AI", "인공지능", "LLM", "MLOps",
+      "game", "게임", "client", "클라이언트", "server", "서버", "platform", "플랫폼", "cloud", "클라우드", "devops", "SRE", "site reliability",
+      "web", "웹", "app", "앱", "mobile", "모바일", "iOS", "android", "안드로이드", "QA",
+      "unity", "유니티", "unreal", "언리얼", "godot", "engine", "엔진", "graphics", "그래픽스", "rendering", "렌더링", "compiler", "컴파일러", "XR", "VR", "AR",
+      "research*", "리서치", "algorithm*", "알고리즘", "DBA", "database", "analytics"
+    ],
+    "aiRoles": ["AI", "인공지능"],
+    "aiContext": [
+      "engineer*", "엔지니어", "개발", "develop*", "programm*", "프로그래머", "research*", "연구", "scientist*", "사이언티스트",
+      "기획", "PM", "PO", "PD", "product", "data", "데이터", "ML", "model*", "모델", "LLM", "agent*", "에이전트", "prompt*", "프롬프트", "training", "학습",
+      "게임", "game"
+    ],
     "seniorExclude": [
       "senior",
       "sr.",
@@ -330,7 +346,19 @@
       "바이오",
       "분자진단",
       "임상",
-      "제약"
+      "제약",
+      "H/W",
+      "HW",
+      "반도체",
+      "통신장비",
+      "광통신",
+      "컨설턴트",
+      "컨설팅",
+      "consultant",
+      "consulting",
+      "쇼핑몰",
+      "패션몰",
+      "업무 보조"
     ]
   },
   "location": {

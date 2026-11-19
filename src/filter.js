@@ -22,6 +22,25 @@ const seniorEx = compile(jf.seniorExclude);
 const roleEx = compile(jf.roleExclude);
 const PLANNING_ROLES = new Set(jf.planningRoles ?? []);
 const planningCtx = compile(jf.planningContext);
+const ENGINEER_ROLES = new Set(jf.engineerRoles ?? []);
+const engineerCtx = compile(jf.engineerContext);
+const AI_ROLES = new Set(jf.aiRoles ?? []);
+const aiCtx = compile(jf.aiContext);
+const anyHit = (list, text) => list.some(({ re }) => re.test(text));
+
+// '엔지니어'나 'AI' 한 단어로만 직무가 걸린 경우, 제목에 맞는 맥락이 있어야 개발 직무로 본다.
+//   엔지니어만: 소프트웨어·데이터·AI·게임 쪽 단어 필요(반도체 공정·네트워크 엔지니어 등은 뺀다)
+//   AI만: 엔지니어·개발·연구·기획 같은 직무 단어 필요("AI활용" 디자이너, "AI 리스크 분석" 등은 뺀다)
+//   둘 다(예: AI Engineer): 통과
+function genericRoleOk(roles, title) {
+  const generic = roles.every((r) => ENGINEER_ROLES.has(r) || AI_ROLES.has(r));
+  if (!generic) return true;
+  const eng = roles.some((r) => ENGINEER_ROLES.has(r));
+  const ai = roles.some((r) => AI_ROLES.has(r));
+  if (eng && ai) return true;
+  if (eng) return anyHit(engineerCtx, title);
+  return anyHit(aiCtx, title);
+}
 
 const hitsOf = (list, text) => [...new Set(list.filter(({ re }) => re.test(text)).map(({ word }) => word))];
 
@@ -67,6 +86,7 @@ export function matchJob(item) {
   if (roles.length === 0) return [];
   // 기획으로만 걸렸으면 게임·엔진·AI 관련 기획일 때만 통과시킨다(전략기획·웹기획 등은 뺀다).
   if (roles.every((r) => PLANNING_ROLES.has(r)) && !planningCtx.some(({ re }) => re.test(title))) return [];
+  if (!genericRoleOk(roles, title)) return [];
 
   const juniorInTitle = hitsOf(groups.junior ?? [], title);
   // 경력: 제목 표기 → 채용 사이트의 경력 값 → 태그·요약 순서로 본다.
